@@ -10,7 +10,8 @@ dotenv.config();
 const RPC_URL = process.env.RPC_URL || "http://127.0.0.1:8545";
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const ORACLE_ADDRESS = process.env.ORACLE_ADDRESS;
-const FEED_URL = process.env.FEED_URL || "https://api.coingecko.com/api/v3/simple/price?ids=cardano&vs_currencies=usd";
+const COINGECKO_COIN_ID = process.env.COINGECKO_COIN_ID || "cardano";
+const FEED_URL = process.env.FEED_URL || `https://api.coingecko.com/api/v3/simple/price?ids=${COINGECKO_COIN_ID}&vs_currencies=usd`;
 const CHAINLINK_FEED_ADDRESS = process.env.CHAINLINK_FEED_ADDRESS;
 const CHAINLINK_RPC_URL = process.env.CHAINLINK_RPC_URL || RPC_URL;
 const PYTH_PRICE_ID = process.env.PYTH_PRICE_ID || "0x2a01deaec9e51a579277b34b122399984d0bbf57e2458a7e42fecd2829867a0d"; // ADA/USD Default
@@ -35,7 +36,7 @@ const oracleContract = new ethers.Contract(ORACLE_ADDRESS, OracleAbi, wallet) as
 async function fetchCoinGeckoPrice(): Promise<number | null> {
     try {
         const response = await axios.get(FEED_URL);
-        const rawPrice: number = response.data.cardano.usd; 
+        const rawPrice: number = response.data[COINGECKO_COIN_ID].usd; 
         console.log(`[Data Source] CoinGecko: $${rawPrice}`);
         return rawPrice;
     } catch (e: any) {
@@ -94,7 +95,9 @@ async function fetchAndNormalizePrice(): Promise<bigint> {
 // Stake Verification
 async function verifyStake(): Promise<boolean> {
     try {
-        const totalStake: bigint = await oracleContract.getTotalUserTokens(wallet.address);
+        const locked: bigint = await oracleContract.lockedTokens(wallet.address);
+        const unlocked: bigint = await oracleContract.unlockedTokens(wallet.address);
+        const totalStake = locked + unlocked;
         console.log(`[Stake Verifier] Current stake: ${ethers.formatUnits(totalStake, 18)} Tokens`);
         return totalStake >= MIN_STAKE_REQUIRED;
     } catch (error) {

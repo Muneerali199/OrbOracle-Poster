@@ -1,6 +1,7 @@
 export const OracleAbi = [
   { "type": "function", "name": "submitValue", "inputs": [{ "name": "newValue", "type": "int256", "internalType": "int256" }], "outputs": [], "stateMutability": "nonpayable" },
-  { "type": "function", "name": "getTotalUserTokens", "inputs": [{ "name": "user", "type": "address", "internalType": "address" }], "outputs": [{ "type": "uint256", "internalType": "uint256" }], "stateMutability": "view" },
+  { "type": "function", "name": "unlockedTokens", "inputs": [{ "name": "user", "type": "address", "internalType": "address" }], "outputs": [{ "type": "uint256", "internalType": "uint256" }], "stateMutability": "view" },
+  { "type": "function", "name": "lockedTokens", "inputs": [{ "name": "user", "type": "address", "internalType": "address" }], "outputs": [{ "type": "uint256", "internalType": "uint256" }], "stateMutability": "view" },
   { "type": "function", "name": "depositTimestamp", "inputs": [{ "name": "", "type": "address", "internalType": "address" }], "outputs": [{ "type": "uint256", "internalType": "uint256" }], "stateMutability": "view" },
   { "type": "function", "name": "WITHDRAWAL_LOCKING_PERIOD", "inputs": [], "outputs": [{ "type": "uint256", "internalType": "uint256" }], "stateMutability": "view" },
   { "type": "function", "name": "readLatestValue", "inputs": [], "outputs": [{ "type": "int256", "internalType": "int256" }], "stateMutability": "nonpayable" }
